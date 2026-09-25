@@ -1,0 +1,36 @@
+name: Wanees checks
+on: [push, pull_request]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: wanees
+          POSTGRES_DB: wanees
+          POSTGRES_PASSWORD: synthetic-ci-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U wanees -d wanees"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      ConnectionStrings__Postgres: Host=127.0.0.1;Database=wanees;Username=wanees;Password=synthetic-ci-only
+      MigrateOnStartup: "true"
+      DOTNET_USE_POLLING_FILE_WATCHER: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: npm ci && npm run lint && npm test && npm run build
+        working-directory: apps/web
+      - run: dotnet restore apps/api --locked-mode && dotnet build apps/api --no-restore
+      - run: |
+          dotnet run --project apps/api --no-build --urls http://127.0.0.1:5080 > api.log 2>&1 &
+          for n in $(seq 1 30); do curl -fsS http://127.0.0.1:5080/api/health && break; sleep 1; done
+          node tests/api-smoke.mjs
