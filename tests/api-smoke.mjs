@@ -1,0 +1,27 @@
+import assert from 'node:assert/strict';
+const base=process.env.API_URL||'http://127.0.0.1:5080/api/v1';
+class Client{cookies=new Map();csrf='';async req(path,method='GET',body,token=true){const r=await fetch(base+path,{method,headers:{'Content-Type':'application/json','Cookie':[...this.cookies].map(([k,v])=>`${k}=${v}`).join('; '),...(method!=='GET'&&token?{'X-CSRF-TOKEN':this.csrf}:{})},body:body===undefined?undefined:JSON.stringify(body)});for(const c of r.headers.getSetCookie()){const [pair]=c.split(';');const at=pair.indexOf('=');this.cookies.set(pair.slice(0,at),pair.slice(at+1));}const data=await r.text();let json;try{json=JSON.parse(data)}catch{json=data}return{status:r.status,data:json}}async session(role){this.csrf=(await this.req('/session')).data.csrf;assert.equal((await this.req('/demo/session','POST',{role})).status,200);this.csrf=(await this.req('/session')).data.csrf}}
+const a=new Client(),b=new Client(),editor=new Client(),reviewer=new Client();
+assert.equal((await a.req('/records/profiles')).status,401);console.log('PASS anonymous access denied');
+await a.session('Guardian');await b.session('Guardian');
+assert.equal((await a.req('/records/profiles','POST',{data:{nickname:'Test'}},false)).status,400);console.log('PASS CSRF required');
+const profile=(await a.req('/records/profiles','POST',{data:{nickname:'Synthetic child',ageBand:'5-10'}})).data;assert.ok(profile.id,JSON.stringify(profile));
+assert.equal((await b.req('/records/profiles')).data.length,0);
+assert.equal((await b.req('/records/profiles/'+profile.id,'DELETE')).status,404);console.log('PASS guardian isolation');
+assert.equal((await a.req('/records/appointments','POST',{data:{date:'bad',time:'99:99'}})).status,400);
+assert.equal((await b.req('/records/appointments','POST',{data:{date:'2026-10-10',time:'09:00',profileId:profile.id}})).status,404);console.log('PASS input and cross-family references rejected');
+const appointment=(await a.req('/records/appointments','POST',{data:{date:'2026-10-10',time:'09:00',profileId:profile.id}})).data;
+assert.equal((await a.req('/records/appointments/'+appointment.id,'PUT',{data:{date:'2026-10-10',time:'10:00'},version:0})).status,409);console.log('PASS concurrency guard');
+const passport=(await a.req('/records/passports','POST',{data:{answers:[0,1,null,2,0,1],reviewed:true}})).data;
+const share=(await a.req('/shares','POST',{passportId:passport.id})).data;assert.equal((await b.req('/shared/'+share.token)).status,200);assert.equal((await b.req('/shares/'+share.id,'DELETE')).status,404);assert.equal((await a.req('/shares/'+share.id,'DELETE')).status,204);assert.equal((await b.req('/shared/'+share.token)).status,404);console.log('PASS scoped share and revocation');
+assert.equal((await a.req('/staff/content')).status,403);
+await editor.session('Editor');await reviewer.session('Reviewer');
+assert.equal((await editor.req('/staff/content','POST',{hospitalId:'another-hospital',title:'No',body:'Draft',language:'en'})).status,403);console.log('PASS hospital scope');
+let content=(await editor.req('/staff/content','POST',{hospitalId:'al-bahar',title:'Synthetic review example',body:'Ask your team what happens next.',language:'en'})).data;
+assert.equal((await editor.req('/staff/content/'+content.id+'/transition','POST',{status:'published',version:1})).status,403);
+content=(await editor.req('/staff/content/'+content.id+'/transition','POST',{status:'in-review',version:content.version})).data;
+assert.equal((await editor.req('/staff/content/'+content.id+'/transition','POST',{status:'approved',version:content.version})).status,403);
+content=(await reviewer.req('/staff/content/'+content.id+'/transition','POST',{status:'approved',version:content.version})).data;
+assert.equal((await reviewer.req('/staff/content/'+content.id+'/transition','POST',{status:'published',version:content.version})).status,200);console.log('PASS editorial publication gate');
+assert.equal((await a.req('/account','DELETE')).status,204);assert.equal((await a.req('/records/profiles')).status,401);console.log('PASS delete and logout');
+console.log('All API smoke checks passed.');

@@ -1,0 +1,23 @@
+[
+  {
+    "file": "amer.wav",
+    "sampleRate": 24000,
+    "channels": 1,
+    "seconds": 12.65,
+    "sha256": "4d14e582dd1c619e59a69af51e7c8e3ee65e7e1985589808a9be311d0098f33d"
+  },
+  {
+    "file": "maryam.wav",
+    "sampleRate": 24000,
+    "channels": 1,
+    "seconds": 12.4,
+    "sha256": "fc3fd02a54b4f582e61ce5e3d8095f31f4652ede5bc1f3275718feebbd39e51f"
+  },
+  {
+    "file": "wanees.wav",
+    "sampleRate": 24000,
+    "channels": 1,
+    "seconds": 13.75,
+    "sha256": "eef56c5ad94dc42d196beb2971aea9a787bbb74e99f79e8c52994008b0fb5520"
+  }
+]

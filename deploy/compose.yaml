@@ -1,0 +1,72 @@
+name: wanees
+services:
+  web:
+    build: {context: .., dockerfile: deploy/Dockerfile.web}
+    restart: unless-stopped
+    ports: ["80:80", "443:443", "443:443/udp"]
+    environment:
+      WANEES_DOMAIN: ${WANEES_DOMAIN:?Set your domain in .env}
+    volumes: ["caddy-data:/data", "caddy-config:/config"]
+    depends_on: [api]
+    networks:
+      default:
+        ipv4_address: 172.29.181.2
+  api:
+    build: {context: .., dockerfile: deploy/Dockerfile.api}
+    restart: unless-stopped
+    environment:
+      DemoMode: "false"
+      LocalHttp: "false"
+      TrustedProxy: 172.29.181.2
+      MigrateOnStartup: "true"
+      AllowedHosts: ${WANEES_DOMAIN}
+      ConnectionStrings__Postgres: Host=db;Database=wanees;Username=wanees;Password=${POSTGRES_PASSWORD:?Set a random database password}
+      AI__ChatUrl: http://ollama:11434
+      AI__Model: ${CHAT_MODEL:-qwen3:4b}
+      AI__VoiceUrl: http://voice:8000
+      AI__ArabicVoiceUrl: http://voice-ar:8000
+    volumes: ["account-keys:/app/data/keys"]
+    depends_on:
+      db: {condition: service_healthy}
+  db:
+    image: postgres:18
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wanees
+      POSTGRES_USER: wanees
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes: ["database:/var/lib/postgresql"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wanees -d wanees"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  ollama:
+    image: ollama/ollama:0.34.3
+    restart: unless-stopped
+    environment: {OLLAMA_HOST: "0.0.0.0:11434", OLLAMA_NUM_PARALLEL: "1", OLLAMA_MAX_LOADED_MODELS: "1"}
+    volumes: ["chat-models:/root/.ollama"]
+  voice:
+    build: {context: .., dockerfile: services/voice/Dockerfile}
+    restart: unless-stopped
+    volumes: ["voice-models:/models", "voice-references:/references"]
+  voice-ar:
+    build: {context: .., dockerfile: services/voice/Dockerfile.arabic}
+    restart: unless-stopped
+    profiles: [arabic]
+    volumes: ["arabic-models:/models", "voice-references:/references:ro"]
+volumes:
+  database:
+  account-keys:
+  chat-models:
+  voice-models:
+  arabic-models:
+  voice-references:
+  caddy-data:
+  caddy-config:
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.29.181.0/24

@@ -1,0 +1,8 @@
+{
+  "actualModel": "qwen3:0.6b",
+  "throughAuthenticatedApiAndLocalProxy": true,
+  "firstWordsSeconds": 1.28,
+  "completeSeconds": 7.64,
+  "deltaEvents": 24,
+  "persisted": true
+}

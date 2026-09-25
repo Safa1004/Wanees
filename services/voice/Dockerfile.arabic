@@ -1,0 +1,8 @@
+FROM python:3.11-slim-bookworm
+RUN apt-get update && apt-get install -y --no-install-recommends libsndfile1 libgomp1 && rm -rf /var/lib/apt/lists/*
+WORKDIR /service
+RUN pip install --no-cache-dir torch==2.6.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cpu && pip install --no-cache-dir chatterbox-tts==0.1.7 fastapi==0.141.1 uvicorn==0.53.0 soundfile==0.14.0
+RUN python -c "from chatterbox.mtl_tts import ChatterboxMultilingualTTS; import inspect; print(inspect.signature(ChatterboxMultilingualTTS.generate))"
+COPY services/voice/app.py .
+ENV VOICE_ENGINE=chatterbox HF_HOME=/models HF_HUB_DISABLE_TELEMETRY=1 DO_NOT_TRACK=1 OMP_NUM_THREADS=2
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--no-access-log"]

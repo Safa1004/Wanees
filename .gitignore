@@ -1,0 +1,14 @@
+node_modules/
+**/bin/
+**/obj/
+**/data/
+local-data/
+.env
+.DS_Store
+**/publish/
+apps/web/dist/
+*.log
+
+# large local archives
+Backups/
+*.zip

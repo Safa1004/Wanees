@@ -1,0 +1,77 @@
+[
+  {
+    "file": "Cast.blend",
+    "meshes": 82,
+    "rigs": 3
+  },
+  {
+    "file": "amer.blend",
+    "meshes": 33,
+    "rigs": 1
+  },
+  {
+    "file": "clinician-female.blend",
+    "meshes": 28,
+    "rigs": 1
+  },
+  {
+    "file": "clinician-male.blend",
+    "meshes": 28,
+    "rigs": 1
+  },
+  {
+    "file": "maryam.blend",
+    "meshes": 36,
+    "rigs": 1
+  },
+  {
+    "file": "rooms-assessment.blend",
+    "meshes": 92,
+    "rigs": 0
+  },
+  {
+    "file": "rooms-coast.blend",
+    "meshes": 49,
+    "rigs": 0
+  },
+  {
+    "file": "rooms-entrance.blend",
+    "meshes": 95,
+    "rigs": 0
+  },
+  {
+    "file": "rooms-exit.blend",
+    "meshes": 95,
+    "rigs": 0
+  },
+  {
+    "file": "rooms-reception.blend",
+    "meshes": 102,
+    "rigs": 0
+  },
+  {
+    "file": "rooms-xray.blend",
+    "meshes": 83,
+    "rigs": 0
+  },
+  {
+    "file": "stethoscope.blend",
+    "meshes": 14,
+    "rigs": 0
+  },
+  {
+    "file": "thermometer.blend",
+    "meshes": 12,
+    "rigs": 0
+  },
+  {
+    "file": "wanees.blend",
+    "meshes": 15,
+    "rigs": 1
+  },
+  {
+    "file": "xray.blend",
+    "meshes": 35,
+    "rigs": 0
+  }
+]

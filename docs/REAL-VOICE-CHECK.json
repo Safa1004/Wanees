@@ -1,0 +1,9 @@
+{
+  "engine": "Kokoro-82M",
+  "voice": "af_heart",
+  "sampleRate": 24000,
+  "duration": 6.775,
+  "generationSeconds": 177.07,
+  "bytes": 325244,
+  "endpointTest": true
+}

@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: wanees
+      POSTGRES_DB: wanees
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wanees -d wanees"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  api:
+    build:
+      context: .
+      dockerfile: infrastructure/Dockerfile.api
+    environment:
+      DemoMode: "false"
+      LocalHttp: "true"
+      MigrateOnStartup: "true"
+      ConnectionStrings__Postgres: "Host=db;Database=wanees;Username=wanees;Password=${POSTGRES_PASSWORD}"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - sessionkeys:/app/data/keys
+  web:
+    build:
+      context: .
+      dockerfile: infrastructure/Dockerfile.web
+    ports:
+      - "127.0.0.1:5180:80"
+    depends_on:
+      - api
+volumes:
+  pgdata:
+  sessionkeys:

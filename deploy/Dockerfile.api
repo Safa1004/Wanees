@@ -1,0 +1,11 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+COPY apps/api/ ./
+RUN dotnet restore --locked-mode && dotnet publish -c Release --no-restore -o /release
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
+WORKDIR /app
+COPY --from=build /release ./
+ENV ASPNETCORE_URLS=http://+:8080
+RUN mkdir -p /app/data/keys && chown -R app:app /app/data
+USER app
+ENTRYPOINT ["dotnet", "Wanees.Api.dll"]

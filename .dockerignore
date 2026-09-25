@@ -1,0 +1,12 @@
+**/node_modules
+**/bin
+**/obj
+**/publish
+**/dist
+**/local-data
+**/data
+**/.env
+.git
+assets
+*.zip
+*.mp4

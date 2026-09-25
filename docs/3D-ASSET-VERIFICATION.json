@@ -1,0 +1,145 @@
+[
+  {
+    "name": "wanees",
+    "bytes": 7788848,
+    "meshes": 14,
+    "skins": 1,
+    "animations": [
+      "idle",
+      "greeting",
+      "listening",
+      "pointing",
+      "demonstrating",
+      "breathing",
+      "encouragement",
+      "goodbye"
+    ]
+  },
+  {
+    "name": "maryam",
+    "bytes": 5307928,
+    "meshes": 35,
+    "skins": 1,
+    "animations": [
+      "idle",
+      "greeting",
+      "listening",
+      "pointing",
+      "demonstrating",
+      "breathing",
+      "encouragement",
+      "goodbye"
+    ]
+  },
+  {
+    "name": "amer",
+    "bytes": 5656436,
+    "meshes": 32,
+    "skins": 1,
+    "animations": [
+      "idle",
+      "greeting",
+      "listening",
+      "pointing",
+      "demonstrating",
+      "breathing",
+      "encouragement",
+      "goodbye"
+    ]
+  },
+  {
+    "name": "clinician-female",
+    "bytes": 2170980,
+    "meshes": 27,
+    "skins": 1,
+    "animations": [
+      "idle",
+      "greeting",
+      "listening",
+      "pointing",
+      "demonstrating",
+      "breathing",
+      "encouragement",
+      "goodbye"
+    ]
+  },
+  {
+    "name": "clinician-male",
+    "bytes": 2143308,
+    "meshes": 27,
+    "skins": 1,
+    "animations": [
+      "idle",
+      "greeting",
+      "listening",
+      "pointing",
+      "demonstrating",
+      "breathing",
+      "encouragement",
+      "goodbye"
+    ]
+  },
+  {
+    "name": "stethoscope",
+    "bytes": 107012,
+    "meshes": 13,
+    "skins": 0,
+    "animations": []
+  },
+  {
+    "name": "thermometer",
+    "bytes": 114304,
+    "meshes": 11,
+    "skins": 0,
+    "animations": []
+  },
+  {
+    "name": "xray",
+    "bytes": 203136,
+    "meshes": 34,
+    "skins": 0,
+    "animations": []
+  },
+  {
+    "name": "rooms/entrance",
+    "bytes": 639120,
+    "meshes": 94,
+    "skins": 0,
+    "animations": []
+  },
+  {
+    "name": "rooms/reception",
+    "bytes": 566388,
+    "meshes": 101,
+    "skins": 0,
+    "animations": []
+  },
+  {
+    "name": "rooms/assessment",
+    "bytes": 474344,
+    "meshes": 91,
+    "skins": 0,
+    "animations": []
+  },
+  {
+    "name": "rooms/xray",
+    "bytes": 481836,
+    "meshes": 82,
+    "skins": 0,
+    "animations": []
+  },
+  {
+    "name": "rooms/exit",
+    "bytes": 655160,
+    "meshes": 94,
+    "skins": 0,
+    "animations": []
+  },
+  {
+    "name": "rooms/coast",
+    "bytes": 544496,
+    "meshes": 48,
+    "skins": 0,
+    "animations": []
+  }
+]

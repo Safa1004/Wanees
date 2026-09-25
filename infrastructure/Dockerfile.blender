@@ -1,0 +1,5 @@
+FROM python:3.11-slim
+RUN apt-get update && apt-get install -y --no-install-recommends libx11-6 libxi6 libxrender1 libxfixes3 libxxf86vm1 libgl1 libsm6 libxkbcommon0 && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir bpy==4.5.14
+ENV OMP_NUM_THREADS=4
+WORKDIR /project
